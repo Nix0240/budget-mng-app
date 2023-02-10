@@ -14,53 +14,60 @@ import { Stack } from "@mui/material";
 //   <Box
 //     component="span"
 //     sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-//   >
-//     •
-//   </Box>
+//   ></Box>
 // );
+
+// const Item = styled(Paper)(({ theme }) => ({
+//   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+//   ...theme.typography.body2,
+//   padding: theme.spacing(1),
+//   textAlign: "center",
+//   color: theme.palette.text.secondary,
+// }));
+
 const BudgetCard = () => {
   return (
-    <Box height={70} sx={{ flexGrow: 1 }}>
+    <Box>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           <Stack spacing={2} direction="row">
-            <Card sx={{ width: 49 + "%", height: 180 }}>
+            <Card sx={{ bgcolor: "lightgray", width: 500 }}>
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="body1" component="div">
                   MY BUDGET
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" color="text.secondary">
                   Rs 5000
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">ADD</Button>
+                <Button size="medium">ADD</Button>
               </CardActions>
             </Card>
-            <Card sx={{ maxWidth: 345 }}>
+            <Card sx={{ bgcolor: "lightgray", width: 500 }}>
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="body" component="div">
                   MONEY SPENT
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" color="text.secondary">
                   Rs 3000
                 </Typography>
               </CardContent>
             </Card>
-            <Card sx={{ maxWidth: 345 }}>
+            <Card sx={{ bgcolor: "lightgray", width: 500 }}>
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="body" component="div">
                   REMAINING AMOUNT
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" color="text.secondary">
                   Rs 2000
                 </Typography>
               </CardContent>
             </Card>
           </Stack>
         </Grid>
-        <Grid item xs={4}></Grid>
-        <Grid item xs={4}></Grid>
+        {/* <Grid item xs={4}></Grid>
+        <Grid item xs={4}></Grid> */}
       </Grid>
     </Box>
   );
