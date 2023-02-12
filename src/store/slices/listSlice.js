@@ -21,10 +21,24 @@ const ListSlice = createSlice({
       state.list.splice(action.payload, 1);
       // console.log("hi" + action.payload);
     },
-    editExp(state, action) {},
+    editExp: (state, action) => {
+      const { id, updates } = action.payload;
+      console.log(action.payload);
+      const index = state.list.findIndex((exp) => exp.id === id);
+      state.list[index] = { ...state.list[index], ...updates };
+
+      // let spent = 0;
+      // state.list.forEach((exp) => {
+      //   spent += exp.cost;
+      // });
+      // state.spent = spent;
+      // state.remaining = state.budget - spent;
+    },
 
     addBudget(state, action) {
       state.budget = action.payload.inbug;
+
+      // state.remaining = state.budget - state.spent;
     },
   },
 });
@@ -32,7 +46,7 @@ const ListSlice = createSlice({
 // console.log(ListSlice.actions);
 
 export default ListSlice.reducer;
-export const { addExp, addBudget, deleteExp } = ListSlice.actions;
+export const { addExp, addBudget, deleteExp, editExp } = ListSlice.actions;
 
 // import { createSlice } from "@reduxjs/toolkit";
 
