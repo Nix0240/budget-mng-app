@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 // import Paper from "@mui/material/Paper";
@@ -8,7 +8,9 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Stack } from "@mui/material";
+import { Input, Stack } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { addBudget } from "../store/slices/listSlice";
 
 // const bull = (
 //   <Box
@@ -26,6 +28,19 @@ import { Stack } from "@mui/material";
 // }));
 
 const BudgetCard = () => {
+  const [inbug, setInbug] = useState(0);
+  const [addbug, setAddbug] = useState(false);
+  const budget = useSelector((state) => state.lists.budget);
+  const spent = useSelector((state) => state.lists.spent);
+  const remaining = useSelector((state) => state.lists.remaining);
+
+  const dispatch = useDispatch();
+  const handleSave = () => {
+    const payload = { inbug: inbug };
+    dispatch(addBudget(payload));
+    setAddbug(false);
+  };
+
   return (
     <Box>
       <Grid container spacing={2}>
@@ -36,12 +51,41 @@ const BudgetCard = () => {
                 <Typography gutterBottom variant="body1" component="div">
                   MY BUDGET
                 </Typography>
-                <Typography variant="h4" color="text.secondary">
-                  Rs 5000
-                </Typography>
+                {!addbug ? (
+                  <Typography variant="h4" color="text.secondary">
+                    Rs {budget}
+                  </Typography>
+                ) : (
+                  <Input
+                    onChange={(e) => {
+                      setInbug(e.target.value);
+                    }}
+                    value={inbug}
+                  />
+                )}
               </CardContent>
               <CardActions>
-                <Button size="medium">ADD</Button>
+                {addbug ? (
+                  <>
+                    <Button onClick={handleSave}>SAVE</Button>
+                    <Button
+                      onClick={() => {
+                        setInbug(budget);
+                      }}
+                    >
+                      CANCEL
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    size="medium"
+                    onClick={() => {
+                      setAddbug(true);
+                    }}
+                  >
+                    {budget === 0 ? "ADD" : "EDIT"}
+                  </Button>
+                )}
               </CardActions>
             </Card>
             <Card sx={{ bgcolor: "lightgray", width: 500 }}>
@@ -50,7 +94,7 @@ const BudgetCard = () => {
                   MONEY SPENT
                 </Typography>
                 <Typography variant="h4" color="text.secondary">
-                  Rs 3000
+                  Rs {spent}
                 </Typography>
               </CardContent>
             </Card>
@@ -60,7 +104,7 @@ const BudgetCard = () => {
                   REMAINING AMOUNT
                 </Typography>
                 <Typography variant="h4" color="text.secondary">
-                  Rs 2000
+                  Rs {remaining}
                 </Typography>
               </CardContent>
             </Card>

@@ -3,14 +3,18 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 import Modal from "@mui/material/Modal";
-import { TextField } from "@mui/material";
+import { Alert, Snackbar, TextField } from "@mui/material";
 // import { DatePicker } from "@mui/material/date-picker";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import { css } from "@emotion/react";
+// import { css } from "@emotion/react";
+
+import { useDispatch } from "react-redux";
+
+import { addExp } from "../store/slices/listSlice";
 
 const style = {
   position: "absolute",
@@ -30,13 +34,16 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal() {
+export default function AddExpense() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date().toLocaleDateString()
+  );
   const [item, setItem] = React.useState("");
   const [cost, setCost] = React.useState(0);
+  const [snackbarOpen, setSnackbaropen] = React.useState(false);
   const handleItemChange = (event) => {
     const input = event.target.value;
     if (!/^[a-zA-Z]+$/.test(input) || input.length > 20) return;
@@ -49,15 +56,25 @@ export default function BasicModal() {
     setCost(input);
   };
 
-  // const handleDateChange = (date) => {
-  //   setSelectedDate(date);
-  // };
-
+  const dispatch = useDispatch();
   const handleSave = () => {
-    console.log("Item:", item);
-    console.log("Cost:", cost);
-    console.log("Date:", selectedDate);
+    const payload = {
+      item: item,
+      cost: cost,
+      date: selectedDate,
+    };
+    dispatch(addExp(payload));
+    if (item !== "" && cost !== " ") {
+      setSnackbaropen(true);
+    }
+
     setOpen(false);
+    setItem("");
+    setCost("");
+  };
+
+  const snackbarClose = (event) => {
+    setSnackbaropen(false);
   };
 
   return (
@@ -65,6 +82,15 @@ export default function BasicModal() {
       <Button onClick={handleOpen} variant="contained">
         Add Expense
       </Button>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={snackbarClose}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Expense Added successfully
+        </Alert>
+      </Snackbar>
       <Modal
         open={open}
         onClose={handleClose}
@@ -86,17 +112,6 @@ export default function BasicModal() {
             onChange={handleCostChange}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {/* <DatePicker
-              disablePast
-              maxDate={new Date()}
-              minDate={new Date(new Date().setDate(new Date().getDate() - 29))}
-              value={selectedDate}
-              onChange={(newValue) => {
-                setSelectedDate(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            /> */}
-
             <DatePicker
               label="Expense Date"
               value={selectedDate}
@@ -115,82 +130,3 @@ export default function BasicModal() {
   );
 }
 
-// import React, { useState } from "react";
-// import { TextField, Button, Modal } from "@mui/material";
-// // import { DatePicker } from "@mui/material/date-picker";
-// import { css } from "@emotion/react";
-
-// const AddExpense = () => {
-//   // const [selectedDate, setSelectedDate] = useState(new Date());
-//   const [item, setItem] = useState("");
-//   const [cost, setCost] = useState(0);
-//   const [open, setOpen] = useState(false);
-
-//   const handleItemChange = (event) => {
-//     const input = event.target.value;
-//     if (!/^[a-zA-Z]+$/.test(input) || input.length > 20) return;
-//     setItem(input);
-//   };
-
-//   const handleCostChange = (event) => {
-//     const input = Number(event.target.value);
-//     if (input <= 0) return;
-//     setCost(input);
-//   };
-
-//   // const handleDateChange = (date) => {
-//   //   setSelectedDate(date);
-//   // };
-
-//   const handleSave = () => {
-//     console.log("Item:", item);
-//     console.log("Cost:", cost);
-//     // console.log("Date:", selectedDate);
-//     setOpen(false);
-//   };
-
-//   return (
-//     <div>
-//       <Button variant="contained" onClick={() => setOpen(true)}>
-//         Add Expense
-//       </Button>
-
-//       <Modal
-//         open={open}
-//         onClose={() => setOpen(false)}
-//         css={css`
-//           display: flex;
-//           flex-direction: column;
-//           align-items: center;
-//         `}
-//       >
-//         <TextField
-//           id="item"
-//           label="Item"
-//           value={item}
-//           onChange={handleItemChange}
-//         />
-//         <TextField
-//           id="cost"
-//           label="Cost"
-//           type="number"
-//           value={cost}
-//           onChange={handleCostChange}
-//         />
-
-//         {/* <DatePicker
-//         disablePast
-//         maxDate={new Date()}
-//         minDate={new Date(new Date().setDate(new Date().getDate() - 29))}
-//         value={selectedDate}
-//         onChange={handleDateChange}
-//       /> */}
-//         <Button variant="contained" onClick={handleSave}>
-//           Save
-//         </Button>
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default AddExpense;

@@ -5,33 +5,55 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-
-const expenses = [
-  { id: 1, item: "Groceries", cost: 50, date: new Date() },
-  { id: 2, item: "Gas", cost: 30, date: new Date() },
-  { id: 3, item: "Rent", cost: 1000, date: new Date() },
-  { id: 4, item: "Food", cost: 500, date: new Date() },
-  { id: 5, item: "travel", cost: 400, date: new Date() },
-  { id: 6, item: "Shoping", cost: 300, date: new Date() },
-  { id: 7, item: "Electricity", cost: 100, date: new Date() },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { deleteExp } from "../store/slices/listSlice";
 
 const ExpenseList = () => {
+  const [snackbarOpen, setSnackbaropen] = React.useState(false);
+  const expenses = useSelector((state) => {
+    return state.lists.list;
+  });
+  const dispatch = useDispatch();
+
+  const deleteItem = (id) => {
+    dispatch(deleteExp(id));
+    setSnackbaropen(true);
+  };
+
+  const snackbarClose = (event) => {
+    setSnackbaropen(false);
+  };
+
   return (
     <List>
-      {expenses.map((expense) => (
-        <ListItem key={expense.id}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={snackbarClose}
+      >
+        <Alert severity="warning" sx={{ width: "100%" }}>
+          Expense deleted successfully
+        </Alert>
+      </Snackbar>
+      {expenses.map((expense, id) => (
+        <ListItem key={id}>
           <ListItemText
             primary={expense.item}
-            secondary={`$${expense.cost} - ${expense.date.toDateString()}`}
+            secondary={`Rs ${expense.cost} Dated: ${expense.date}`}
           />
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="edit">
               <EditIcon />
             </IconButton>
-            <IconButton edge="end" aria-label="delete">
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={() => deleteItem(id)}
+            >
               <DeleteIcon />
             </IconButton>
           </ListItemSecondaryAction>
