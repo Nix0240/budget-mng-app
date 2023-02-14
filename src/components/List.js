@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   List,
   ListItem,
@@ -13,32 +13,32 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteExp, editExp } from "../store/slices/listSlice";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ExpenseList = () => {
-  const [snackbarOpen, setSnackbaropen] = React.useState(false);
+  const [snackbarOpen, setSnackbaropen] = React.useState({
+    open: false,
+    severity: "",
+    msg: "",
+  });
   const expenses = useSelector((state) => {
     return state.lists.list;
   });
   const dispatch = useDispatch();
-
-  // State to keep track of the selected item
   const [selectedItem, setSelectedItem] = useState(null);
-
-  // State to keep track of the form open state
   const [formOpen, setFormOpen] = useState(false);
-
-  // State to keep track of the form input values
   const [formInput, setFormInput] = useState({
     item: "",
     cost: "",
     date: "",
   });
 
-  // Helper function to handle form input change
   const handleFormInputChange = (event) => {
     setFormInput({
       ...formInput,
@@ -46,12 +46,16 @@ const ExpenseList = () => {
     });
   };
 
-  // Function to handle form submit
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    dispatch(editExp(selectedItem.id, formInput));
+  const handleFormSubmit = () => {
+    console.log("hello1");
+    dispatch(editExp({ id: selectedItem.id, updates: formInput }));
     setFormOpen(false);
     setFormInput({ item: "", cost: "", date: "" });
+    setSnackbaropen({
+      open: true,
+      severity: "success",
+      msg: "Edited successfully",
+    });
   };
 
   const handleEdit = (item) => {
@@ -68,37 +72,118 @@ const ExpenseList = () => {
   const [open, setOpen] = useState(false);
   // const dispatch = useDispatch();
 
-  const handleDelete = () => {
+  const handleDelete = (item) => {
+    setSelectedItem(item);
     setOpen(true);
   };
 
   const handleConfirmDelete = (id) => {
     dispatch(deleteExp(id));
     setOpen(false);
+    setSnackbaropen({
+      open: true,
+      severity: "warning",
+      msg: "Expense deleted successfully",
+    });
   };
 
   const handleCancelDelete = () => {
     setOpen(false);
   };
 
-  const snackbarClose = (event) => {
-    setSnackbaropen(false);
+  const snackbarClose = () => {
+    setSnackbaropen({
+      open: false,
+      severity: "",
+      msg: "",
+    });
   };
+
+  const [rows, setRows] = useState(expenses);
+  const [searched, setSearched] = useState("");
+
+  useEffect(() => {
+    setRows(expenses);
+  }, [expenses]);
+
+  const requestSearch = (searchedVal) => {
+    setSearched(searchedVal);
+    if (searchedVal !== " ") {
+      const filteredRows = expenses.filter((row) => {
+        return row.item.toLowerCase().includes(searchedVal.toLowerCase());
+      });
+      setRows(filteredRows);
+    } else {
+      setRows(expenses);
+    }
+  };
+
+  const cancelSearch = () => {
+    setSearched("");
+    setRows(expenses);
+  };
+
+  // const [from, setFrom] = useState("");
+  // const [to, setTo] = useState("");
+
+  // const handleFilter = () => {
+  //   const fromDate = new Date(from);
+  //   const toDate = new Date(to);
+  //   dispatch(filterByDate({ from: fromDate, to: toDate }));
+  // };
 
   return (
     <>
+      <div
+        style={{
+          display: "flex",
+          direction: "column",
+          justifyContent: "space-around",
+        }}
+      >
+        <TextField
+          value={searched}
+          onChange={(e) => requestSearch(e.target.value)}
+          id="outlined-basic"
+          label="Search by name"
+          variant="standard"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  type="button"
+                  sx={{ p: "10px" }}
+                  aria-label="search"
+                  onClick={cancelSearch}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        {/* <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={expenses.cost}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Filter By" />}
+        /> */}
+      </div>
+
       <List>
         <Snackbar
-          open={snackbarOpen}
+          open={snackbarOpen.open}
           autoHideDuration={2000}
           onClose={snackbarClose}
         >
-          <Alert severity="warning" sx={{ width: "100%" }}>
-            Expense deleted successfully
+          <Alert severity={snackbarOpen.severity} sx={{ width: "100%" }}>
+            {snackbarOpen.msg}
           </Alert>
         </Snackbar>
-        {expenses.map((expense, id) => (
-          <ListItem key={id}>
+        {rows.map((expense) => (
+          <ListItem key={expense.id}>
             <ListItemText
               primary={expense.item}
               secondary={`Rs ${expense.cost} Dated: ${expense.date}`}
@@ -107,7 +192,7 @@ const ExpenseList = () => {
               <IconButton onClick={() => handleEdit(expense)}>
                 <EditIcon />
               </IconButton>
-              <IconButton onClick={() => handleDelete(expense.id)}>
+              <IconButton onClick={() => handleDelete(expense)}>
                 <DeleteIcon />
               </IconButton>
             </ListItemSecondaryAction>
@@ -120,7 +205,7 @@ const ExpenseList = () => {
           <DialogContentText>
             Edit the expense details below and click on the save button
           </DialogContentText>
-          <form onSubmit={handleFormSubmit}>
+          <form>
             <input
               type="text"
               name="item"
@@ -129,7 +214,7 @@ const ExpenseList = () => {
               placeholder="Item"
             />
             <input
-              type="text"
+              type="number"
               name="cost"
               value={formInput.cost}
               onChange={handleFormInputChange}
@@ -144,7 +229,7 @@ const ExpenseList = () => {
             />
             <DialogActions>
               <Button onClick={() => setFormOpen(false)}>Cancel</Button>
-              <Button type="submit">Save</Button>
+              <Button onClick={handleFormSubmit}>Save</Button>
             </DialogActions>
           </form>
         </DialogContent>

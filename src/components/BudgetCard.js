@@ -71,6 +71,7 @@ const BudgetCard = () => {
                     <Button
                       onClick={() => {
                         setInbug(budget);
+                        setAddbug(false);
                       }}
                     >
                       CANCEL
