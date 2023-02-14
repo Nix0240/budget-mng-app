@@ -12,7 +12,6 @@ function App() {
         <div className="card">
           <BudgetCard />
         </div>
-
         <div className="exp">
           <AddExpense />
         </div>

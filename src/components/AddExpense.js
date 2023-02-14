@@ -4,14 +4,11 @@ import Button from "@mui/material/Button";
 
 import Modal from "@mui/material/Modal";
 import { Alert, Snackbar, TextField } from "@mui/material";
-// import { DatePicker } from "@mui/material/date-picker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { addExp } from "../store/slices/listSlice";
-
 
 const style = {
   position: "absolute",
@@ -47,13 +44,11 @@ export default function AddExpense() {
   React.useEffect(() => {
     if (cost >= budget || !item) {
       setError(true);
-    }
-    else { 
+    } else {
       setError(false);
     }
-  },[cost,item,selectedDate,budget])
-  
-  
+  }, [cost, item, selectedDate, budget]);
+
   const handleItemChange = (event) => {
     const input = event.target.value;
     if (!/^[a-zA-Z]+$/.test(input) || input.length > 20) return;
@@ -85,7 +80,6 @@ export default function AddExpense() {
 
   const snackbarClose = (event) => {
     setSnackbaropen(false);
-    
   };
 
   return (
@@ -124,6 +118,8 @@ export default function AddExpense() {
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
+              // maxDate={new Date()}
+              // minDate={new Date(new Date().setDate(new Date().getDate() - 29))}
               label="Expense Date"
               value={selectedDate}
               onChange={(newValue) => {

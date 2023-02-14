@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteExp, editExp } from "../store/slices/listSlice";
 import CloseIcon from "@mui/icons-material/Close";
 
+
 const ExpenseList = () => {
   const [snackbarOpen, setSnackbaropen] = React.useState({
     open: false,
@@ -123,15 +124,6 @@ const ExpenseList = () => {
     setRows(expenses);
   };
 
-  // const [from, setFrom] = useState("");
-  // const [to, setTo] = useState("");
-
-  // const handleFilter = () => {
-  //   const fromDate = new Date(from);
-  //   const toDate = new Date(to);
-  //   dispatch(filterByDate({ from: fromDate, to: toDate }));
-  // };
-
   return (
     <>
       <div
@@ -162,15 +154,15 @@ const ExpenseList = () => {
             ),
           }}
         />
-
-        {/* <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={expenses.cost}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Filter By" />}
-        /> */}
       </div>
+      <div
+        style={{
+          padding: "20px",
+          display: "flex",
+          direction: "column",
+          justifyContent: "space-around",
+        }}
+      ></div>
 
       <List>
         <Snackbar
@@ -241,9 +233,9 @@ const ExpenseList = () => {
             Are you sure you want to delete this expense?
           </DialogContentText>
           <DialogActions>
-            <Button onClick={handleCancelDelete}>Cancel</Button>
+            <Button onClick={handleCancelDelete}>NO</Button>
             <Button onClick={() => handleConfirmDelete(selectedItem.id)}>
-              Delete
+              YES
             </Button>
           </DialogActions>
         </DialogContent>
@@ -254,41 +246,3 @@ const ExpenseList = () => {
 
 export default ExpenseList;
 
-// {
-/* <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="edit">
-              <EditIcon />
-            </IconButton>
-            <IconButton edge="end" aria-label="delete" onClick={handleDelete}>
-              <DeleteIcon />
-            </IconButton>
-            <Dialog
-              open={open}
-              onClose={handleCancelDelete}
-              // aria-labelledby="delete-confirmation-title"
-              // aria-describedby="delete-confirmation-description"
-            >
-              <DialogTitle id="id">Delete Confirmation</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="id">
-                  Are you sure you want to delete this expense?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleConfirmDelete} color="primary">
-                  Yes
-                </Button>
-                <Button onClick={handleCancelDelete} color="primary">
-                  No
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </ListItemSecondaryAction>
-        </ListItem>
-      ))}
-    </List>
-  );
-};
-
-export default ExpenseList; */
-//

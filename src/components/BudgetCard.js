@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-// import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-// import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -11,21 +9,6 @@ import Typography from "@mui/material/Typography";
 import { Input, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addBudget } from "../store/slices/listSlice";
-
-// const bull = (
-//   <Box
-//     component="span"
-//     sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-//   ></Box>
-// );
-
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-//   ...theme.typography.body2,
-//   padding: theme.spacing(1),
-//   textAlign: "center",
-//   color: theme.palette.text.secondary,
-// }));
 
 const BudgetCard = () => {
   const [inbug, setInbug] = useState(0);

@@ -47,13 +47,6 @@ const ListSlice = createSlice({
 
       state.remaining = state.budget - state.spent;
     },
-    filterByDate(state, action) {
-      const { from, to } = action.payload;
-      state.list = state.list.filter((exp) => {
-        const date = new Date(exp.date);
-        return date >= from && date <= to;
-      });
-    },
   },
 });
 
